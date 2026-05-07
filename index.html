@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>SolGuard AI</title>
 
   <style>
 
     body {
+
       margin: 0;
-      padding: 0;
-      background: #061128;
-      font-family: Arial, sans-serif;
+
+      background: #081120;
+
+      font-family: Arial;
+
       color: white;
 
       display: flex;
+
       justify-content: center;
+
       align-items: center;
 
       height: 100vh;
+
     }
 
-    .container {
+    .box {
 
       width: 90%;
+
       max-width: 700px;
 
-      text-align: center;
-
-      background: #0b1733;
+      background: #101c35;
 
       padding: 40px;
 
       border-radius: 20px;
 
-      box-shadow:
-        0 0 30px rgba(0,0,0,0.5);
+      text-align: center;
 
-    }
-
-    h1 {
-      margin-bottom: 10px;
-      font-size: 42px;
-    }
-
-    p {
-      color: #b8c1d9;
     }
 
     input {
@@ -55,15 +56,14 @@
 
       padding: 14px;
 
-      border: none;
-
       border-radius: 10px;
+
+      border: none;
 
       margin-top: 20px;
 
-      font-size: 16px;
-
       outline: none;
+
     }
 
     button {
@@ -78,46 +78,28 @@
 
       color: white;
 
-      font-size: 16px;
-
       cursor: pointer;
 
       margin-left: 10px;
 
-      transition: 0.3s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
     }
 
     #result {
 
       margin-top: 30px;
 
-      text-align: left;
-
-      background: #132347;
+      background: #162544;
 
       padding: 20px;
 
       border-radius: 12px;
 
-      line-height: 1.8;
+      text-align: left;
 
-      min-height: 100px;
-    }
+      min-height: 120px;
 
-    .safe {
-      color: #00e676;
-    }
+      line-height: 1.7;
 
-    .danger {
-      color: #ff5252;
-    }
-
-    .warning {
-      color: #ffd740;
     }
 
   </style>
@@ -126,16 +108,15 @@
 
 <body>
 
-  <div class="container">
+  <div class="box">
 
     <h1>🚀 SolGuard AI</h1>
 
     <p>
-      AI-powered Solana Wallet Scam Detector
+      AI-powered Solana wallet scam detector
     </p>
 
     <input
-      type="text"
       id="wallet"
       placeholder="Enter Solana wallet address"
     />
@@ -146,7 +127,7 @@
 
     <div id="result">
 
-      Wallet analysis will appear here...
+      Waiting for analysis...
 
     </div>
 
@@ -162,45 +143,35 @@
       const result =
         document.getElementById("result");
 
-      if (!wallet) {
-
-        result.innerHTML =
-          "Please enter a wallet address";
-
-        return;
-      }
-
       result.innerHTML =
-        "⏳ Analyzing wallet...";
+        "Analyzing wallet...";
 
       try {
 
-        const response = await fetch(
-          "https://solanaguard-ai-production.up.railway.app/check",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ wallet })
-          }
-        );
+        const response =
+          await fetch(
+            "https://solanaguard-ai-production.up.railway.app/check",
+            {
 
-        const data = await response.json();
+              method: "POST",
 
-        let riskColor = "safe";
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-        if (data.risk === "Suspicious") {
-          riskColor = "warning";
-        }
+              body:
+                JSON.stringify({ wallet })
 
-        if (data.risk === "High Risk") {
-          riskColor = "danger";
-        }
+            }
+          );
+
+        const data =
+          await response.json();
 
         result.innerHTML = `
 
-          <h2 class="${riskColor}">
+          <h2>
             ${data.risk}
           </h2>
 
@@ -231,7 +202,7 @@
         console.log(err);
 
         result.innerHTML =
-          "❌ Failed to analyze wallet";
+          "Failed to analyze wallet";
 
       }
 
@@ -240,4 +211,5 @@
   </script>
 
 </body>
+
 </html>
