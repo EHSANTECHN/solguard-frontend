@@ -1,87 +1,242 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>SolGuard AI</title>
 
   <style>
-    body{
-      background:#0f172a;
-      color:white;
-      font-family:Arial;
-      padding:40px;
-      text-align:center;
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #061128;
+      font-family: Arial, sans-serif;
+      color: white;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      height: 100vh;
     }
 
-    input{
-      width:300px;
-      padding:12px;
-      border:none;
-      border-radius:8px;
-      margin-top:20px;
+    .container {
+
+      width: 90%;
+      max-width: 700px;
+
+      text-align: center;
+
+      background: #0b1733;
+
+      padding: 40px;
+
+      border-radius: 20px;
+
+      box-shadow:
+        0 0 30px rgba(0,0,0,0.5);
+
     }
 
-    button{
-      padding:12px 20px;
-      border:none;
-      border-radius:8px;
-      background:#22c55e;
-      color:white;
-      cursor:pointer;
-      margin-left:10px;
+    h1 {
+      margin-bottom: 10px;
+      font-size: 42px;
     }
 
-    #result{
-      margin-top:30px;
-      font-size:22px;
+    p {
+      color: #b8c1d9;
     }
+
+    input {
+
+      width: 70%;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      margin-top: 20px;
+
+      font-size: 16px;
+
+      outline: none;
+    }
+
+    button {
+
+      padding: 14px 22px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #00c853;
+
+      color: white;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      margin-left: 10px;
+
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    #result {
+
+      margin-top: 30px;
+
+      text-align: left;
+
+      background: #132347;
+
+      padding: 20px;
+
+      border-radius: 12px;
+
+      line-height: 1.8;
+
+      min-height: 100px;
+    }
+
+    .safe {
+      color: #00e676;
+    }
+
+    .danger {
+      color: #ff5252;
+    }
+
+    .warning {
+      color: #ffd740;
+    }
+
   </style>
+
 </head>
 
 <body>
 
-  <h1>🚀 SolGuard AI</h1>
+  <div class="container">
 
-  <p>AI-powered Solana Wallet Scam Detector</p>
+    <h1>🚀 SolGuard AI</h1>
 
-  <input
-    id="wallet"
-    placeholder="Enter Solana wallet address"
-  />
+    <p>
+      AI-powered Solana Wallet Scam Detector
+    </p>
 
-  <button onclick="checkRisk()">
-    Check Risk
-  </button>
+    <input
+      type="text"
+      id="wallet"
+      placeholder="Enter Solana wallet address"
+    />
 
-  <div id="result"></div>
+    <button onclick="checkWallet()">
+      Check Risk
+    </button>
+
+    <div id="result">
+
+      Wallet analysis will appear here...
+
+    </div>
+
+  </div>
 
   <script>
-    async function checkRisk(){
+
+    async function checkWallet() {
 
       const wallet =
         document.getElementById("wallet").value;
 
-      const response = await fetch(
-        "https://solanaguard-ai-production.up.railway.app/check",
-        {
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json"
-          },
-          body: JSON.stringify({ wallet })
+      const result =
+        document.getElementById("result");
+
+      if (!wallet) {
+
+        result.innerHTML =
+          "Please enter a wallet address";
+
+        return;
+      }
+
+      result.innerHTML =
+        "⏳ Analyzing wallet...";
+
+      try {
+
+        const response = await fetch(
+          "https://solanaguard-ai-production.up.railway.app/check",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ wallet })
+          }
+        );
+
+        const data = await response.json();
+
+        let riskColor = "safe";
+
+        if (data.risk === "Suspicious") {
+          riskColor = "warning";
         }
-      );
 
-      const data = await response.json();
+        if (data.risk === "High Risk") {
+          riskColor = "danger";
+        }
 
-      document.getElementById("result").innerHTML =
-        `
-        Risk: ${data.risk}
-        <br/>
-        Score: ${data.score}
-        <br/>
-        ${data.reason}
+        result.innerHTML = `
+
+          <h2 class="${riskColor}">
+            ${data.risk}
+          </h2>
+
+          <p>
+            <strong>Wallet:</strong>
+            ${data.wallet}
+          </p>
+
+          <p>
+            <strong>Transactions:</strong>
+            ${data.transactions}
+          </p>
+
+          <p>
+            <strong>Risk Score:</strong>
+            ${data.score}/100
+          </p>
+
+          <p>
+            <strong>AI Analysis:</strong><br/>
+            ${data.explanation}
+          </p>
+
         `;
+
+      } catch (err) {
+
+        console.log(err);
+
+        result.innerHTML =
+          "❌ Failed to analyze wallet";
+
+      }
+
     }
+
   </script>
 
 </body>
