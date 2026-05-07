@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SolGuard AI</title>
+
+  <style>
+    body{
+      background:#0f172a;
+      color:white;
+      font-family:Arial;
+      padding:40px;
+      text-align:center;
+    }
+
+    input{
+      width:300px;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      margin-top:20px;
+    }
+
+    button{
+      padding:12px 20px;
+      border:none;
+      border-radius:8px;
+      background:#22c55e;
+      color:white;
+      cursor:pointer;
+      margin-left:10px;
+    }
+
+    #result{
+      margin-top:30px;
+      font-size:22px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🚀 SolGuard AI</h1>
+
+  <p>AI-powered Solana Wallet Scam Detector</p>
+
+  <input
+    id="wallet"
+    placeholder="Enter Solana wallet address"
+  />
+
+  <button onclick="checkRisk()">
+    Check Risk
+  </button>
+
+  <div id="result"></div>
+
+  <script>
+    async function checkRisk(){
+
+      const wallet =
+        document.getElementById("wallet").value;
+
+      const response = await fetch(
+        "https://solanaguard-ai-production.up.railway.app/check",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body: JSON.stringify({ wallet })
+        }
+      );
+
+      const data = await response.json();
+
+      document.getElementById("result").innerHTML =
+        `
+        Risk: ${data.risk}
+        <br/>
+        Score: ${data.score}
+        <br/>
+        ${data.reason}
+        `;
+    }
+  </script>
+
+</body>
+</html>
